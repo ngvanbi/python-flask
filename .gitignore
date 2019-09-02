@@ -7,3 +7,6 @@
 
 # misc
 /.idea
+/venv
+/__pycache__
+/modules/*/__pycache__
