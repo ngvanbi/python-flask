@@ -6,8 +6,6 @@ from bson.objectid import ObjectId
 from flask import Flask
 from flask_pymongo import PyMongo
 
-from app.controllers import *
-
 
 class JSONEncoder(json.JSONEncoder):
     """Extend json-encoder class"""
@@ -30,3 +28,5 @@ mongo = PyMongo(app)
 
 # Use the modified encoder class to handle ObjectId and datetime object while jsonifying the response.
 app.json_encoder = JSONEncoder
+
+from app.controllers import *
