@@ -4,6 +4,7 @@ from flask import jsonify, request
 
 import logger
 from app import app, mongo
+from app.schemas import validate_user
 
 ROOT_PATH = os.environ.get('ROOT_PATH')
 LOG = logger.get_root_logger(
