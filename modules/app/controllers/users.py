@@ -47,21 +47,25 @@ def register():
         return jsonify({'ok': True, 'message': 'Base request parameters:{}'.format(data['message'])}), 400
 
 
+@app.route("/refresh", methods=['POST'])
+def refresh():
+    """Refresh token endpoint."""
+    current_user = get_jwt_identity()
+    ret = {
+        'token': create_access_token(identity=current_user)
+    }
+    return jsonify({'ok': True, 'data': ret}), 200
+
+
 @app.route('/user', methods=['GET', 'POST', 'DELETE', 'PATCH'])
 def user():
+    """Route read user."""
     if request.method == 'GET':
         query = request.args
-        data = mongo.db.users.find_one(query)
-        return jsonify(data), 200
+        data = mongo.db.users.find_one(query, {'_id': 0})
+        return jsonify({'ok': True, 'data': data}), 200
 
     data = request.get_json()
-    if request.method == 'POST':
-        if data.get('name', None) is not None and data.get('email', None) is not None:
-            mongo.db.users.insert_one(data)
-            return jsonify({'ok': True, 'message': 'User created successfully!'}), 200
-        else:
-            return jsonify({'ok': False, 'message': 'Bad request parameters!'}), 400
-
     if request.method == 'DELETE':
         if data.get('email', None) is not None:
             db_response = mongo.db.users.delete_one({'email': data['email']})
