@@ -34,6 +34,19 @@ def auth_user():
         return jsonify({'ok': False, 'message': 'Bad request parameters: {}'.format(data.get('message'))}), 400
 
 
+@app.route('/register', methods=['POST'])
+def register():
+    """Register use endpoint."""
+    data = validate_user(request.get_json())
+    if data['ok']:
+        data = data['data']
+        data['password'] = flask_bcrypt.generate_password_hash(data['password'])
+        mongo.db.users.insert_one(data)
+        return jsonify({'ok': True, 'message': 'User created successfully!'}), 200
+    else:
+        return jsonify({'ok': True, 'message': 'Base request parameters:{}'.format(data['message'])}), 400
+
+
 @app.route('/user', methods=['GET', 'POST', 'DELETE', 'PATCH'])
 def user():
     if request.method == 'GET':
